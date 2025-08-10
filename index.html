@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bignon Urilis Pernaude ADDA - Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .animate-fade-in-left {
+            animation: fadeInLeft 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .animate-fade-in-right {
+            animation: fadeInRight 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .animate-bounce {
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes bounce {
+          0%, 100% {
+            transform: translateY(-5%);
+            animation-timing-function: cubic-bezier(0.8,0,1,1);
+          }
+          50% {
+            transform: translateY(0);
+            animation-timing-function: cubic-bezier(0,0,0.2,1);
+          }
+        }
+
+        .typing-indicator span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #cbd5e1;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: typing 1s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 80%, 100% {
+                transform: scale(0);
+            }
+            40% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 text-gray-100 font-inter min-h-screen">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <!-- Navigation principale -->
+        <nav class="flex justify-center md:justify-end space-x-4 mb-8">
+            <button id="nav-accueil" class="py-2 px-4 rounded-full transition-all duration-300 transform hover:scale-105 bg-indigo-600 text-white shadow-lg">Accueil</button>
+            <button id="nav-etudes" class="py-2 px-4 rounded-full transition-all duration-300 transform hover:scale-105 bg-gray-700 text-gray-300 hover:bg-gray-600">Études</button>
+            <button id="nav-experiences" class="py-2 px-4 rounded-full transition-all duration-300 transform hover:scale-105 bg-gray-700 text-gray-300 hover:bg-gray-600">Expériences</button>
+            <button id="nav-competences" class="py-2 px-4 rounded-full transition-all duration-300 transform hover:scale-105 bg-gray-700 text-gray-300 hover:bg-gray-600">Compétences</button>
+        </nav>
+
+        <!-- Contenu des sections -->
+        <div id="content-container">
+            <!-- La section active sera injectée ici par JavaScript -->
+        </div>
+    </div>
+
+    <!-- Bouton pour ouvrir/fermer le chatbot -->
+    <div class="fixed bottom-4 right-4 z-50">
+        <button id="chatbot-toggle" class="bg-indigo-600 text-white p-4 rounded-full shadow-lg transition-transform duration-300 transform hover:scale-110 animate-bounce">
+            <i class="fa-solid fa-robot text-2xl"></i>
+        </button>
+    </div>
+
+    <!-- Chatbot simple -->
+    <div id="chatbot-container" class="fixed bottom-20 right-4 w-80 h-96 bg-gray-800 rounded-xl shadow-2xl flex-col z-50 hidden animate-fade-in-right">
+        <div class="bg-indigo-600 text-white p-4 rounded-t-xl flex justify-between items-center">
+            <h3 class="text-lg font-bold">Bot de Pernaude</h3>
+            <button id="chatbot-close" class="text-white hover:text-gray-200">
+                <i class="fa-solid fa-times text-xl"></i>
+            </button>
+        </div>
+        <div id="chatbot-messages" class="flex-grow p-4 overflow-y-auto space-y-4">
+            <div class="text-center text-gray-400 italic">Posez-moi une question sur le CV de Pernaude.</div>
+        </div>
+        <div class="p-4 border-t border-gray-700 flex">
+            <input type="text" id="chatbot-input" class="w-full bg-gray-700 text-white rounded-full p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Écrivez votre message...">
+            <button id="chatbot-send" class="ml-2 bg-indigo-600 hover:bg-indigo-700 text-white p-3 rounded-full">
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const contentContainer = document.getElementById('content-container');
+            const navButtons = document.querySelectorAll('nav button');
+            const chatbotToggle = document.getElementById('chatbot-toggle');
+            const chatbotContainer = document.getElementById('chatbot-container');
+            const chatbotClose = document.getElementById('chatbot-close');
+            const chatbotInput = document.getElementById('chatbot-input');
+            const chatbotSend = document.getElementById('chatbot-send');
+            const chatbotMessages = document.getElementById('chatbot-messages');
+
+            // Données du portfolio
+            const portfolioData = {
+                nom: 'ADDA',
+                prenom: 'Bignon Urilis Pernaude',
+                titre: 'Développeur Full Stack & Designer',
+                email: 'pernaudeadda06@gmail.com',
+                telephone: '01 95 45 02 97',
+                telephoneLink: '22995450297',
+                presentation: 'Étudiant en Licence 3 en Système Informatique et Logiciel, je suis un développeur passionné par la création d\'applications web robustes et d\'interfaces utilisateur élégantes. Mon expérience s\'étend du développement front-end au développement back-end, avec une forte compétence en HTML, CSS, JavaScript et PHP.',
+                etudes: [
+                    { annee: '2024-2025', niveau: 'Licence 3', intitule: 'Système Informatique et Logiciel à HECM (Parakou)' },
+                    { annee: '2023-2024', niveau: 'Licence 2', intitule: 'Système Informatique et Logiciel à HECM (Parakou)' },
+                    { annee: '2022-2023', niveau: 'Licence 1', intitule: 'Système Informatique et Logiciel à HECM (Parakou)' },
+                    { annee: '2021-2022', niveau: 'DT/DWM', intitule: 'Développeur Web et Mobile au Lycée Technique et Professionnel de Tchaourou' },
+                ],
+                experiences: [
+                    {
+                        periode: 'Mars 2025 – Mai 2025',
+                        entreprise: 'Yérikissi Group (Parakou)',
+                        poste: 'Stage – Développeur Full Stack',
+                        missions: [
+                            'Développement et maintenance d\'applications web.',
+                            'Collaboration avec l\'équipe pour la résolution de problèmes techniques.'
+                        ]
+                    },
+                    {
+                        periode: 'Février 2022 – Mars 2022',
+                        entreprise: 'Light Innovation (Parakou)',
+                        poste: 'Stage – Développeur Front-End',
+                        missions: [
+                            'Création d\'interfaces utilisateur responsives.',
+                            'Intégration de maquettes avec HTML, CSS et JavaScript.'
+                        ]
+                    },
+                    {
+                        periode: 'Juin 2021 – Août 2021',
+                        entreprise: 'Waxangari Labs (Parakou)',
+                        poste: 'Stage – Développeur Front-End',
+                        missions: [
+                            'Participation à des projets de développement web.',
+                            'Optimisation de l\'expérience utilisateur.'
+                        ]
+                    },
+                ],
+                competencesTechniques: [
+                    'PHP',
+                    'JavaScript',
+                    'HTML',
+                    'CSS',
+                    'Photoshop',
+                    'Word',
+                    'PowerPoint',
+                    'Excel'
+                ],
+            };
+
+            // Fonction pour générer les sections
+            const renderSection = (sectionId) => {
+                let htmlContent = '';
+                if (sectionId === 'accueil') {
+                    htmlContent = `
+                        <section id="accueil-section" class="bg-gray-800 rounded-2xl shadow-xl p-6 md:p-12 mb-8 animate-fade-in-up">
+                            <div class="flex flex-col md:flex-row items-center md:items-start gap-8">
+                                <div class="flex-shrink-0 w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden shadow-lg animate-fade-in-left">
+                                    <img src="https://placehold.co/256x256/334155/E2E8F0?text=${portfolioData.prenom.charAt(0)}.${portfolioData.nom.charAt(0)}" alt="Photo de profil" class="w-full h-full object-cover">
+                                </div>
+                                <div class="flex-grow text-center md:text-left animate-fade-in-right">
+                                    <h1 class="text-4xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-indigo-600 mb-2">${portfolioData.prenom} ${portfolioData.nom}</h1>
+                                    <h2 class="text-xl md:text-2xl text-gray-400 mb-4">${portfolioData.titre}</h2>
+                                    <p class="text-gray-300 leading-relaxed max-w-2xl mx-auto md:mx-0">${portfolioData.presentation}</p>
+                                    <div class="mt-8 flex flex-wrap justify-center md:justify-start gap-4">
+                                        <a href="https://wa.me/${portfolioData.telephoneLink}?text=Bonjour%20Pernaude,%20j'ai%20visité%20votre%20portfolio." target="_blank" rel="noopener noreferrer" class="flex items-center space-x-2 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-full transition-transform duration-300 transform hover:scale-105 shadow-lg">
+                                            <i class="fa-brands fa-whatsapp text-2xl"></i>
+                                            <span>WhatsApp</span>
+                                        </a>
+                                        <a href="mailto:${portfolioData.email}" class="flex items-center space-x-2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-full transition-transform duration-300 transform hover:scale-105 shadow-lg">
+                                            <i class="fa-solid fa-envelope text-2xl"></i>
+                                            <span>Email</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    `;
+                } else if (sectionId === 'etudes') {
+                    htmlContent = `
+                        <section id="etudes-section" class="bg-gray-800 rounded-2xl shadow-xl p-6 md:p-12 mb-8 animate-fade-in-up">
+                            <h2 class="text-3xl font-bold text-center mb-8 text-indigo-400">Parcours Académique</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                ${portfolioData.etudes.map((etude, index) => `
+                                    <div class="bg-gray-700 p-6 rounded-xl shadow-md transition-all duration-300 transform hover:scale-105 hover:shadow-2xl flex items-center space-x-4 animate-fade-in" style="animation-delay: ${index * 0.1}s">
+                                        <i class="fa-solid fa-graduation-cap text-4xl text-indigo-400"></i>
+                                        <div>
+                                            <h3 class="text-xl font-semibold text-gray-100">${etude.intitule}</h3>
+                                            <p class="text-gray-300">${etude.niveau} - ${etude.annee}</p>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </section>
+                    `;
+                } else if (sectionId === 'experiences') {
+                    htmlContent = `
+                        <section id="experiences-section" class="bg-gray-800 rounded-2xl shadow-xl p-6 md:p-12 mb-8 animate-fade-in-up">
+                            <h2 class="text-3xl font-bold text-center mb-8 text-indigo-400">Expériences Professionnelles</h2>
+                            <div class="grid grid-cols-1 gap-6">
+                                ${portfolioData.experiences.map((exp, index) => `
+                                    <div class="bg-gray-700 p-6 rounded-xl shadow-md transition-all duration-300 transform hover:scale-105 hover:shadow-2xl animate-fade-in" style="animation-delay: ${index * 0.1}s">
+                                        <div class="flex items-center space-x-4 mb-2">
+                                            <i class="fa-solid fa-briefcase text-2xl text-indigo-400"></i>
+                                            <h3 class="text-2xl font-bold text-gray-100">${exp.poste}</h3>
+                                        </div>
+                                        <p class="text-gray-300 text-lg mb-2">${exp.entreprise} <span class="text-sm text-gray-400">(${exp.periode})</span></p>
+                                        <ul class="list-disc list-inside text-gray-400 space-y-1">
+                                            ${exp.missions.map(mission => `<li>${mission}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </section>
+                    `;
+                } else if (sectionId === 'competences') {
+                    htmlContent = `
+                        <section id="competences-section" class="bg-gray-800 rounded-2xl shadow-xl p-6 md:p-12 mb-8 animate-fade-in-up">
+                            <h2 class="text-3xl font-bold text-center mb-8 text-indigo-400">Compétences Techniques</h2>
+                            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                                ${portfolioData.competencesTechniques.map((competence, index) => `
+                                    <div class="flex flex-col items-center bg-gray-700 p-4 rounded-xl shadow-md transition-all duration-300 transform hover:scale-110 hover:bg-indigo-600 animate-fade-in" style="animation-delay: ${index * 0.1}s">
+                                        <span class="text-xl font-semibold text-gray-100 text-center">${competence}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </section>
+                    `;
+                }
+                contentContainer.innerHTML = htmlContent;
+            };
+
+            // Fonction pour mettre à jour la navigation
+            const updateNav = (activeId) => {
+                navButtons.forEach(button => {
+                    if (button.id === `nav-${activeId}`) {
+                        button.classList.remove('bg-gray-700', 'text-gray-300', 'hover:bg-gray-600');
+                        button.classList.add('bg-indigo-600', 'text-white', 'shadow-lg');
+                    } else {
+                        button.classList.remove('bg-indigo-600', 'text-white', 'shadow-lg');
+                        button.classList.add('bg-gray-700', 'text-gray-300', 'hover:bg-gray-600');
+                    }
+                });
+            };
+
+            // Événements de navigation
+            navButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const sectionId = e.currentTarget.id.replace('nav-', '');
+                    renderSection(sectionId);
+                    updateNav(sectionId);
+                });
+            });
+
+            // Afficher la section d'accueil par défaut
+            renderSection('accueil');
+            updateNav('accueil');
+
+            // Logique du chatbot
+            let isTyping = false;
+
+            chatbotToggle.addEventListener('click', () => {
+                chatbotContainer.classList.toggle('hidden');
+                chatbotContainer.classList.toggle('flex');
+            });
+
+            chatbotClose.addEventListener('click', () => {
+                chatbotContainer.classList.add('hidden');
+                chatbotContainer.classList.remove('flex');
+            });
+
+            const addMessageToChat = (text, sender) => {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
+                messageDiv.innerHTML = `
+                    <div class="max-w-[75%] p-3 rounded-xl ${sender === 'user' ? 'bg-blue-600 text-white rounded-br-none' : 'bg-gray-700 text-gray-100 rounded-bl-none'}">
+                        ${text}
+                    </div>
+                `;
+                chatbotMessages.appendChild(messageDiv);
+                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+            };
+
+            const handleChatSubmit = () => {
+                const input = chatbotInput.value.trim();
+                if (input === '') return;
+
+                addMessageToChat(input, 'user');
+                chatbotInput.value = '';
+
+                // Indicateur de frappe
+                const typingIndicatorDiv = document.createElement('div');
+                typingIndicatorDiv.className = 'flex justify-start';
+                typingIndicatorDiv.id = 'typing-indicator';
+                typingIndicatorDiv.innerHTML = `
+                    <div class="max-w-[75%] p-3 rounded-xl bg-gray-700 text-gray-100 rounded-bl-none">
+                        <div class="typing-indicator"><span></span><span></span><span></span></div>
+                    </div>
+                `;
+                chatbotMessages.appendChild(typingIndicatorDiv);
+                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+
+
+                setTimeout(() => {
+                    let botResponseText = 'Désolé, je ne comprends pas cette question.';
+                    const lowerCaseMessage = input.toLowerCase();
+
+                    if (lowerCaseMessage.includes('nom') || lowerCaseMessage.includes('prénom')) {
+                        botResponseText = `Mon nom est ${portfolioData.prenom} ${portfolioData.nom}.`;
+                    } else if (lowerCaseMessage.includes('téléphone') || lowerCaseMessage.includes('contact')) {
+                        botResponseText = `Vous pouvez me contacter au ${portfolioData.telephone} ou par email à ${portfolioData.email}.`;
+                    } else if (lowerCaseMessage.includes('compétences')) {
+                        botResponseText = `Mes compétences techniques incluent : ${portfolioData.competencesTechniques.join(', ')}.`;
+                    } else if (lowerCaseMessage.includes('expérience') || lowerCaseMessage.includes('travail')) {
+                        botResponseText = `J'ai eu des stages chez Yérikissi Group, Light Innovation et Waxangari Labs.`;
+                    } else if (lowerCaseMessage.includes('études') || lowerCaseMessage.includes('formation')) {
+                        botResponseText = `Je suis actuellement en Licence 3 en Système Informatique et Logiciel à HECM (Parakou).`;
+                    } else if (lowerCaseMessage.includes('bonjour') || lowerCaseMessage.includes('salut')) {
+                        botResponseText = 'Bonjour ! Je suis le chatbot de Pernaude. Comment puis-je vous aider ?';
+                    } else if (lowerCaseMessage.includes('merci')) {
+                        botResponseText = 'De rien ! N\'hésitez pas si vous avez d\'autres questions.';
+                    }
+
+                    // Retirer l'indicateur de frappe
+                    const typingIndicator = document.getElementById('typing-indicator');
+                    if(typingIndicator) typingIndicator.remove();
+
+                    addMessageToChat(botResponseText, 'bot');
+                }, 1500);
+            };
+
+            chatbotSend.addEventListener('click', handleChatSubmit);
+            chatbotInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    handleChatSubmit();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

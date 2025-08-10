@@ -1,0 +1,10 @@
+# Activer le moteur de réécriture d'URL
+RewriteEngine On
+
+# Si la requête n'est pas un fichier existant
+RewriteCond %{REQUEST_FILENAME} !-f
+# Et si la requête n'est pas un répertoire existant
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Alors, réécrire l'URL pour servir index.html
+RewriteRule ^(.*)$ index.html [L,QSA]
